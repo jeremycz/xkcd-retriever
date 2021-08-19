@@ -24,7 +24,7 @@ parser.add_argument(
     "--nodisplay",
     action="store_true",
     default=False,
-    help="suppress image display"
+    help="suppress image display",
 )
 
 args = parser.parse_args()
