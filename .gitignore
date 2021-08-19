@@ -1,6 +1,7 @@
 # Project-specific
 *.png
 .vscode/
+.envrc
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
