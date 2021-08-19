@@ -16,14 +16,14 @@ class Retriever:
         self._min_ind = 1
         self._display_comic = display_comic
 
-    def initialise(self) -> None:
+    def initialise(self) -> bool:
         """Get latest comic to determine maximum index"""
         req = requests.get(f"{Retriever.URL_ROOT}{Retriever.URL_RESOURCE}")
         if req.status_code != requests.codes.ok:
             print(
                 f"Initialisation failed: Unable to access latest comic (status {req.status_code})"
             )
-            return
+            return False
 
         # Get number of latest comic
         self._latest_data = req.json()
@@ -31,17 +31,18 @@ class Retriever:
             print(
                 f"Unable to retrieve latest comic index - {json.dumps(self._latest_data)}"
             )
-            return
+            return False
 
         self._max_ind = self._latest_data["num"]
         self._initialised = True
         print(f"Successfully initialised. Latest index: {self._max_ind}")
+        return True
 
     def get_latest(self) -> None:
         if not self._initialised:
             print("Please initialise retriever before attempting to retrieve comics")
             return
-        
+
         if self._display_comic:
             self._display(self._latest_data)
 
