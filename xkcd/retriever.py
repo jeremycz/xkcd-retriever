@@ -1,6 +1,8 @@
-import requests
+from typing import Tuple, Union
 import json
 from random import randint
+
+import requests
 from PIL import Image
 
 
@@ -16,14 +18,14 @@ class Retriever:
         self._min_ind = 1
         self._display_comic = display_comic
 
-    def initialise(self) -> bool:
+    def initialise(self) -> Tuple[bool, Union[int, None]]:
         """Get latest comic to determine maximum index"""
         req = requests.get(f"{Retriever.URL_ROOT}{Retriever.URL_RESOURCE}")
         if req.status_code != requests.codes.ok:
             print(
                 f"Initialisation failed: Unable to access latest comic (status {req.status_code})"
             )
-            return False
+            return False, None
 
         # Get number of latest comic
         self._latest_data = req.json()
@@ -31,44 +33,46 @@ class Retriever:
             print(
                 f"Unable to retrieve latest comic index - {json.dumps(self._latest_data)}"
             )
-            return False
+            return False, None
 
         self._max_ind = self._latest_data["num"]
         self._initialised = True
         print(f"Successfully initialised. Latest index: {self._max_ind}")
-        return True
+        return True, self._max_ind
 
-    def get_latest(self) -> None:
+    def get_latest(self) -> Union[dict, None]:
         if not self._initialised:
             print("Please initialise retriever before attempting to retrieve comics")
-            return
+            return None
 
         if self._display_comic:
             self._display(self._latest_data)
 
-    def get_random(self) -> None:
+        return self._latest_data
+
+    def get_random(self) -> Union[dict, None]:
         if not self._initialised:
             print("Please initialise retriever before attempting to retrieve comics")
-            return
+            return None
 
-        self.get_comic(randint(self._min_ind, self._max_ind))
+        return self.get_comic(randint(self._min_ind, self._max_ind))
 
-    def get_comic(self, ind: int) -> dict:
+    def get_comic(self, ind: int) -> Union[dict, None]:
         if not self._initialised:
             print("Please initialise retriever before attempting to retrieve comics")
-            return
+            return None
 
         if ind > self._max_ind:
             print(f"Max comic index is: {self._max_ind}")
-            return
+            return None
         elif ind < self._min_ind:
             print(f"Min comic index is: {self._min_ind}")
-            return
+            return None
 
         req = requests.get(f"{Retriever.URL_ROOT}{ind}/{Retriever.URL_RESOURCE}")
         if req.status_code != requests.codes.ok:
             print(f"Unable to access comic {ind} (status {req.status_code})")
-            return
+            return None
 
         data = req.json()
         if self._display_comic:
