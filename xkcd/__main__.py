@@ -4,9 +4,21 @@ from xkcd.retriever import Retriever
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-i", "--index", type=int)
-parser.add_argument("-r", "--random", action="store_true", default=False)
-parser.add_argument("-l", "--latest", action="store_true", default=True)
+parser.add_argument("-i", "--index", type=int, help="display a specific comic by index")
+parser.add_argument(
+    "-r",
+    "--random",
+    action="store_true",
+    default=False,
+    help="display a random comic (default: false)",
+)
+parser.add_argument(
+    "-l",
+    "--latest",
+    action="store_true",
+    default=True,
+    help="display the latest comic (default true)",
+)
 
 args = parser.parse_args()
 
