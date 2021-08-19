@@ -9,11 +9,12 @@ class Retriever:
     URL_RESOURCE = "info.0.json"
     IMAGE_CACHE = "temp.png"
 
-    def __init__(self):
+    def __init__(self, display_comic: bool = False):
         self._initialised = False
         self._latest_data = None
         self._max_ind = None
         self._min_ind = 1
+        self._display_comic = display_comic
 
     def initialise(self) -> None:
         """Get latest comic to determine maximum index"""
@@ -40,8 +41,9 @@ class Retriever:
         if not self._initialised:
             print("Please initialise retriever before attempting to retrieve comics")
             return
-
-        self._display(self._latest_data)
+        
+        if self._display_comic:
+            self._display(self._latest_data)
 
     def get_random(self) -> None:
         if not self._initialised:
@@ -50,7 +52,7 @@ class Retriever:
 
         self.get_comic(randint(self._min_ind, self._max_ind))
 
-    def get_comic(self, ind: int) -> None:
+    def get_comic(self, ind: int) -> dict:
         if not self._initialised:
             print("Please initialise retriever before attempting to retrieve comics")
             return
@@ -67,7 +69,11 @@ class Retriever:
             print(f"Unable to access comic {ind} (status {req.status_code})")
             return
 
-        self._display(req.json())
+        data = req.json()
+        if self._display_comic:
+            self._display(data)
+
+        return data
 
     def _get_image(self, url: str) -> bool:
         req = requests.get(url, stream=True)

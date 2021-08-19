@@ -10,19 +10,26 @@ parser.add_argument(
     "--random",
     action="store_true",
     default=False,
-    help="display a random comic (default: false)",
+    help="display a random comic",
 )
 parser.add_argument(
     "-l",
     "--latest",
     action="store_true",
-    default=True,
-    help="display the latest comic (default true)",
+    default=False,
+    help="display the latest comic",
+)
+parser.add_argument(
+    "-n",
+    "--nodisplay",
+    action="store_true",
+    default=False,
+    help="suppress image display"
 )
 
 args = parser.parse_args()
 
-retriever = Retriever()
+retriever = Retriever(not args.nodisplay)
 retriever.initialise()
 
 if args.index is not None:
